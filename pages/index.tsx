@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import MealCard from "../components/MealCard";
 
@@ -7,9 +7,28 @@ export default function Home() {
   const [ingredients, setIngredients] = useState<string[]>([]);
   const [favorites, setFavorites] = useState<string[]>([]);
 
+  // Load saved ingredients and favorites from localStorage
+  useEffect(() => {
+    const savedIngredients = localStorage.getItem("ingredients");
+    const savedFavorites = localStorage.getItem("favorites");
+
+    if (savedIngredients) setIngredients(JSON.parse(savedIngredients));
+    if (savedFavorites) setFavorites(JSON.parse(savedFavorites));
+  }, []);
+
+  // Save ingredients to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem("ingredients", JSON.stringify(ingredients));
+  }, [ingredients]);
+
+  // Save favorites to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem("favorites", JSON.stringify(favorites));
+  }, [favorites]);
+
   // Add ingredient
   const addIngredient = async () => {
-    if (!ingredient) return;
+    if (!ingredient.trim()) return;
     try {
       const res = await axios.post("/api/addIngredient", { ingredient });
       setIngredients(res.data.ingredients);
@@ -19,7 +38,7 @@ export default function Home() {
     }
   };
 
-  // Delete ingredient from list
+  // Remove ingredient
   const removeIngredient = (item: string) => {
     setIngredients((prev) => prev.filter((i) => i !== item));
   };
@@ -31,7 +50,7 @@ export default function Home() {
     }
   };
 
-  // Generate random meal suggestion
+  // Generate random meal
   const generateRandomMeal = () => {
     if (ingredients.length === 0) return "";
     const randomIndex = Math.floor(Math.random() * ingredients.length);
@@ -44,7 +63,7 @@ export default function Home() {
         MealMate
       </h1>
 
-      {/* Input */}
+      {/* Ingredient input */}
       <div className="flex justify-center mb-6">
         <input
           type="text"
@@ -61,7 +80,7 @@ export default function Home() {
         </button>
       </div>
 
-      {/* Ingredients List */}
+      {/* Ingredients list */}
       <div className="max-w-md mx-auto mb-6">
         <h2 className="text-xl font-semibold mb-2">Your Ingredients:</h2>
         <ul className="list-disc list-inside">
@@ -76,10 +95,13 @@ export default function Home() {
         </ul>
       </div>
 
-      {/* Random Meal Generator */}
+      {/* Random meal generator */}
       <div className="max-w-md mx-auto text-center mb-6">
         <button
-          onClick={() => alert(generateRandomMeal())}
+          onClick={() => {
+            const meal = generateRandomMeal();
+            if (meal) alert(meal);
+          }}
           className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
         >
           Generate Random Meal
