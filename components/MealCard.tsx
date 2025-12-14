@@ -1,29 +1,22 @@
 interface MealCardProps {
-  ingredient: string;
-  removeIngredient: (ingredient: string) => void;
-  addToFavorites: (meal: string) => void;
+  name: string;
+  image: string;
+  onRemove?: () => void;
 }
 
-export default function MealCard({ ingredient, removeIngredient, addToFavorites }: MealCardProps) {
-  const mealName = `${ingredient} Stir Fry 🍳`;
-
+export default function MealCard({ name, image, onRemove }: MealCardProps) {
   return (
-    <li className="bg-white shadow-md rounded p-4 mb-2 flex justify-between items-center">
-      <span className="font-medium">{mealName}</span>
-      <div className="flex gap-2">
+    <div className="border rounded-lg overflow-hidden shadow p-4 relative">
+      <img src={image} alt={name} className="w-full h-40 object-cover"/>
+      <h3 className="font-bold text-lg mt-2">{name}</h3>
+      {onRemove && (
         <button
-          onClick={() => addToFavorites(mealName)}
-          className="text-yellow-500 hover:text-yellow-700"
-        >
-          ⭐
-        </button>
-        <button
-          onClick={() => removeIngredient(ingredient)}
-          className="text-red-500 hover:text-red-700"
+          onClick={onRemove}
+          className="absolute top-2 right-2 text-red-500 hover:text-red-700"
         >
           ❌
         </button>
-      </div>
-    </li>
+      )}
+    </div>
   );
-} 
+}
