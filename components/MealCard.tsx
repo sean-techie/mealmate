@@ -26,4 +26,4 @@ export default function MealCard({ ingredient, removeIngredient, addToFavorites 
       </div>
     </li>
   );
-}
+} 
