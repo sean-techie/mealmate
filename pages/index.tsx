@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
+import IngredientTag from "../components/IngredientTag";
 import MealCard from "../components/MealCard";
 
-// Predefined meal types
 const recipes = [
   { name: "Salad 🥗", image: "/images/salad.jpg" },
   { name: "Stir Fry 🍳", image: "/images/stir-fry.jpg" },
@@ -80,13 +80,11 @@ export default function Home() {
       {/* Ingredient Tags */}
       <div className="flex flex-wrap gap-2 mb-6">
         {ingredients.map((ing) => (
-          <span
+          <IngredientTag
             key={ing}
-            onClick={() => removeIngredient(ing)}
-            className="bg-green-200 text-green-800 px-3 py-1 rounded-full cursor-pointer hover:bg-green-300"
-          >
-            {ing} ✕
-          </span>
+            name={ing}
+            onRemove={() => removeIngredient(ing)}
+          />
         ))}
       </div>
 
@@ -100,7 +98,11 @@ export default function Home() {
 
       {/* Suggested Meal */}
       {suggestedMeal && (
-        <MealCard name={suggestedMeal.name} image={suggestedMeal.image} />
+        <MealCard
+          name={suggestedMeal.name}
+          image={suggestedMeal.image}
+          onRemove={() => alert("You can implement favorite/remove logic here")}
+        />
       )}
     </div>
   );
